@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App - User Profile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffdd40;
+        }
+
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            margin: 2rem 0 3rem;
+        }
+
+        .profile-card,
+        .stats-card,
+        .update-form {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 2.5rem;
+        }
+
+        .profile-info {
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        .info-value {
+            color: #7f8c8d;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #6a11cb;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            background: #6a11cb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #2575fc;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+        }
+
+        .btn-delete:hover {
+            background: #c0392b;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .error {
+            color: #e74c3c;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .success {
+            color: #27ae60;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">TodoApp</div>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="todos.html">My Todos</a></li>
+                    <li><a href="index.html">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="profile-container">
+            <div>
+                <div class="profile-card">
+                    <div class="profile-header">
+                        <div class="profile-avatar">U</div>
+                        <h2>User Profile</h2>
+                    </div>
+                    <div class="profile-info">
+                        <div class="info-item">
+                            <span class="info-label">Name:</span>
+                            <span class="info-value" id="userName">User</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value" id="userEmail">user@example.com</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Member since:</span>
+                            <span class="info-value" id="joinDate">January 2023</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <h2>Your Statistics</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalTodos">12</div>
+                            <div class="stat-label">Total Todos</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="completedTodos">8</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="pendingTodos">4</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="update-form">
+                <h2>Update Profile</h2>
+
+                <div class="error" id="errorMessage"></div>
+                <div class="success" id="successMessage"></div>
+
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" value="User">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="user@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password" id="currentPassword" name="currentPassword">
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" id="newPassword" name="newPassword">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm New Password</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword">
+                    </div>
+
+                    <div class="action-buttons">
+                        <button type="submit" class="btn">Update Profile</button>
+                        <button type="button" class="btn btn-delete" id="deleteAccount">Delete Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // In a real app, this would load user data from the server
+            // Simulate loading user data
+            setTimeout(() => {
+                document.getElementById('userName').textContent = 'John Doe';
+                document.getElementById('userEmail').textContent = 'john.doe@example.com';
+                document.getElementById('joinDate').textContent = 'March 15, 2023';
+
+                document.getElementById('name').value = 'John Doe';
+                document.getElementById('email').value = 'john.doe@example.com';
+            }, 500);
+
+            // Update profile form
+            document.getElementById('profileForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                const errorElement = document.getElementById('errorMessage');
+                const successElement = document.getElementById('successMessage');
+
+                // Hide previous messages
+                errorElement.style.display = 'none';
+                successElement.style.display = 'none';
+
+                // Validate passwords if changing
+                if (newPassword && newPassword !== confirmPassword) {
+                    errorElement.textContent = 'New passwords do not match';
+                    errorElement.style.display = 'block';
+                    return;
+                }
+
+                // In a real app, this would send data to your backend
+                successElement.textContent = 'Profile updated successfully!';
+                successElement.style.display = 'block';
+
+                // Update the displayed user info
+                document.getElementById('userName').textContent = name;
+                document.getElementById('userEmail').textContent = email;
+
+                // Reset password fields
+                document.getElementById('currentPassword').value = '';
+                document.getElementById('newPassword').value = '';
+                document.getElementById('confirmPassword').value = '';
+            });
+
+            // Delete account button
+            document.getElementById('deleteAccount').addEventListener('click', function () {
+                if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                    // In a real app, this would send a request to delete the account
+                    alert('Account deletion would be processed. Redirecting to home page.');
+                    window.location.href = '/';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
