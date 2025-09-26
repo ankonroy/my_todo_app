@@ -5,7 +5,7 @@ import { AppModule } from './app.module';
 import { sessionConfig } from './session.config';
 import { getConnectionToken } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { existsSync } from 'fs';
+// import { existsSync } from 'fs';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -18,14 +18,14 @@ async function bootstrap() {
 
   // Add this to your main.ts before setting views
   const viewsPath = join(__dirname, '..', 'views');
-  console.log('Views directory path:', viewsPath);
+  //   console.log('Views directory path:', viewsPath);
 
   // Check if directory exists
-  console.log('Views directory exists:', existsSync(viewsPath));
+  //   console.log('Views directory exists:', existsSync(viewsPath));
 
   // Check if index.ejs exists
-  const indexPath = join(viewsPath, 'index.ejs');
-  console.log('index.ejs exists:', existsSync(indexPath));
+  //   const indexPath = join(viewsPath, 'index.ejs');
+  //   console.log('index.ejs exists:', existsSync(indexPath));
 
   app.setBaseViewsDir(viewsPath);
   app.setViewEngine('ejs');

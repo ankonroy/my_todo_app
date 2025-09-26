@@ -62,6 +62,26 @@
             color: #ffdd40;
         }
 
+        .logout-form {
+            display: inline;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0;
+            margin: 0;
+            text-decoration: underline;
+        }
+
+        .logout-btn:hover {
+            color: #ffdd40;
+        }
+
         .profile-container {
             display: grid;
             grid-template-columns: 1fr 2fr;
@@ -207,15 +227,27 @@
         }
 
         .error {
-            color: #e74c3c;
+            background: #ffeaa7;
+            color: #d63031;
+            padding: 1rem;
+            border-radius: 5px;
             margin-bottom: 1rem;
             display: none;
         }
 
         .success {
-            color: #27ae60;
+            background: #d1fae5;
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 5px;
             margin-bottom: 1rem;
             display: none;
+        }
+
+        .loading {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
         }
 
         @media (max-width: 768px) {
@@ -240,9 +272,13 @@
             <nav>
                 <div class="logo">TodoApp</div>
                 <ul class="nav-links">
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="todos.html">My Todos</a></li>
-                    <li><a href="index.html">Logout</a></li>
+                    <li><a href="/todos">My Todos</a></li>
+                    <li><a href="/user">Profile</a></li>
+                    <li>
+                        <!-- <form action="/logout" method="POST" class="logout-form"> -->
+                        <a href="/logout">Logout</a>
+                        <!-- </form> -->
+                    </li>
                 </ul>
             </nav>
         </div>
@@ -253,21 +289,24 @@
             <div>
                 <div class="profile-card">
                     <div class="profile-header">
-                        <div class="profile-avatar">U</div>
+                        <div class="profile-avatar" id="userInitial">
+                            <%= user.email.charAt(0).toUpperCase() %>
+                        </div>
                         <h2>User Profile</h2>
                     </div>
                     <div class="profile-info">
                         <div class="info-item">
-                            <span class="info-label">Name:</span>
-                            <span class="info-value" id="userName">User</span>
-                        </div>
-                        <div class="info-item">
                             <span class="info-label">Email:</span>
-                            <span class="info-value" id="userEmail">user@example.com</span>
+                            <span class="info-value" id="userEmail">
+                                <%= user.email %>
+                            </span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Member since:</span>
-                            <span class="info-value" id="joinDate">January 2023</span>
+                            <span class="info-value" id="joinDate">
+                                <%= new Date(user.createdAt).toLocaleDateString('en-US', { year: 'numeric' ,
+                                    month: 'long' , day: 'numeric' }) %>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -276,15 +315,21 @@
                     <h2>Your Statistics</h2>
                     <div class="stats-grid">
                         <div class="stat-item">
-                            <div class="stat-number" id="totalTodos">12</div>
+                            <div class="stat-number" id="totalTodos">
+                                <%= stats.totalTodos %>
+                            </div>
                             <div class="stat-label">Total Todos</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number" id="completedTodos">8</div>
+                            <div class="stat-number" id="completedTodos">
+                                <%= stats.completedTodos %>
+                            </div>
                             <div class="stat-label">Completed</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number" id="pendingTodos">4</div>
+                            <div class="stat-number" id="pendingTodos">
+                                <%= stats.pendingTodos %>
+                            </div>
                             <div class="stat-label">Pending</div>
                         </div>
                     </div>
@@ -299,24 +344,22 @@
 
                 <form id="profileForm">
                     <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" id="name" name="name" value="User">
-                    </div>
-                    <div class="form-group">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" value="user@example.com">
+                        <input type="email" id="email" name="email" value="<%= user.email %>">
                     </div>
                     <div class="form-group">
-                        <label for="currentPassword">Current Password</label>
-                        <input type="password" id="currentPassword" name="currentPassword">
+                        <label for="currentPassword">Current Password (required for changes)</label>
+                        <input type="password" id="currentPassword" name="currentPassword"
+                            placeholder="Enter current password">
                     </div>
                     <div class="form-group">
-                        <label for="newPassword">New Password</label>
-                        <input type="password" id="newPassword" name="newPassword">
+                        <label for="newPassword">New Password (optional)</label>
+                        <input type="password" id="newPassword" name="newPassword" placeholder="Enter new password">
                     </div>
                     <div class="form-group">
                         <label for="confirmPassword">Confirm New Password</label>
-                        <input type="password" id="confirmPassword" name="confirmPassword">
+                        <input type="password" id="confirmPassword" name="confirmPassword"
+                            placeholder="Confirm new password">
                     </div>
 
                     <div class="action-buttons">
@@ -329,64 +372,86 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // In a real app, this would load user data from the server
-            // Simulate loading user data
-            setTimeout(() => {
-                document.getElementById('userName').textContent = 'John Doe';
-                document.getElementById('userEmail').textContent = 'john.doe@example.com';
-                document.getElementById('joinDate').textContent = 'March 15, 2023';
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-                document.getElementById('name').value = 'John Doe';
-                document.getElementById('email').value = 'john.doe@example.com';
-            }, 500);
+            const email = document.getElementById('email').value;
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
 
-            // Update profile form
-            document.getElementById('profileForm').addEventListener('submit', function (e) {
-                e.preventDefault();
+            // Hide previous messages
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
 
-                const name = document.getElementById('name').value;
-                const email = document.getElementById('email').value;
-                const currentPassword = document.getElementById('currentPassword').value;
-                const newPassword = document.getElementById('newPassword').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
+            // Basic validation
+            if (newPassword && newPassword !== confirmPassword) {
+                document.getElementById('errorMessage').textContent = 'New passwords do not match';
+                document.getElementById('errorMessage').style.display = 'block';
+                return;
+            }
 
-                const errorElement = document.getElementById('errorMessage');
-                const successElement = document.getElementById('successMessage');
+            if (newPassword && newPassword.length < 6) {
+                document.getElementById('errorMessage').textContent = 'New password must be at least 6 characters long';
+                document.getElementById('errorMessage').style.display = 'block';
+                return;
+            }
 
-                // Hide previous messages
-                errorElement.style.display = 'none';
-                successElement.style.display = 'none';
+            try {
+                const response = await fetch('/user/profile', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    // credentials:
+                    body: JSON.stringify({ email, currentPassword, newPassword })
+                });
 
-                // Validate passwords if changing
-                if (newPassword && newPassword !== confirmPassword) {
-                    errorElement.textContent = 'New passwords do not match';
-                    errorElement.style.display = 'block';
-                    return;
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('successMessage').textContent = result.message;
+                    document.getElementById('successMessage').style.display = 'block';
+
+                    // Clear password fields
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+
+                    // Update displayed email
+                    document.getElementById('userEmail').textContent = email;
+                    document.getElementById('userInitial').textContent = email.charAt(0).toUpperCase();
+                } else {
+                    document.getElementById('errorMessage').textContent = result.message || 'Update failed';
+                    document.getElementById('errorMessage').style.display = 'block';
                 }
+            } catch (error) {
+                document.getElementById('errorMessage').textContent = 'Error updating profile';
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        });
 
-                // In a real app, this would send data to your backend
-                successElement.textContent = 'Profile updated successfully!';
-                successElement.style.display = 'block';
+        document.getElementById('deleteAccount').addEventListener('click', async () => {
+            const password = prompt('Enter your password to confirm account deletion:');
+            if (password) {
+                if (confirm('Are you sure? This action cannot be undone. All your todos will be permanently deleted.')) {
+                    try {
+                        const response = await fetch('/user', {
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ currentPassword: password })
+                        });
 
-                // Update the displayed user info
-                document.getElementById('userName').textContent = name;
-                document.getElementById('userEmail').textContent = email;
-
-                // Reset password fields
-                document.getElementById('currentPassword').value = '';
-                document.getElementById('newPassword').value = '';
-                document.getElementById('confirmPassword').value = '';
-            });
-
-            // Delete account button
-            document.getElementById('deleteAccount').addEventListener('click', function () {
-                if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-                    // In a real app, this would send a request to delete the account
-                    alert('Account deletion would be processed. Redirecting to home page.');
-                    window.location.href = '/';
+                        if (response.ok) {
+                            alert('Account deleted successfully. Redirecting to home page.');
+                            window.location.href = '/';
+                        } else {
+                            const error = await response.json();
+                            alert(error.message || 'Deletion failed');
+                        }
+                    } catch (error) {
+                        alert('Error deleting account');
+                    }
                 }
-            });
+            }
         });
     </script>
 </body>

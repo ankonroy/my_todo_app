@@ -8,6 +8,7 @@ import { TodoService } from './todos/todos.service';
 import { User, UserSchema } from './schemas/user.schema';
 import { Todo, TodoSchema } from './schemas/todo.schema';
 import { SessionGuard } from './guards/session.guard';
+import { UserModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { SessionGuard } from './guards/session.guard';
       { name: User.name, schema: UserSchema },
       { name: Todo.name, schema: TodoSchema },
     ]),
+    UserModule,
   ],
   controllers: [AppController, AuthController, TodosController],
   providers: [AuthService, TodoService, SessionGuard],

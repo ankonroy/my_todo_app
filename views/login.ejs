@@ -142,8 +142,8 @@
             </form>
 
             <div class="links">
-                <p>Don't have an account? <a href="registration.html">Register here</a></p>
-                <p><a href="index.html">Back to Home</a></p>
+                <p>Don't have an account? <a href="register">Register here</a></p>
+                <p><a href="/">Back to Home</a></p>
             </div>
         </div>
     </div>
@@ -151,6 +151,8 @@
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
+
+            // console.log("hello");
 
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -165,11 +167,16 @@
                     body: JSON.stringify({ email, password })
                 });
 
+                // console.log(response);
+
                 if (response.ok) {
                     window.location.href = '/todos';
+                    // const data = await response.json();
+                    // console.log(data);
                 } else {
                     const data = await response.json();
-                    errorElement.textContent = data.message || 'Login failed';
+                    console.log(data);
+                    errorElement.textContent = data.error || 'Login failed';
                     errorElement.style.display = 'block';
                 }
             } catch (error) {

@@ -6,6 +6,9 @@ export class Todo extends Document {
   @Prop({ required: true })
   title: string;
 
+  @Prop({ required: true })
+  description: string;
+
   @Prop({ default: false })
   completed: boolean;
 

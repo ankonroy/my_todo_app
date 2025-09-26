@@ -1,19 +1,20 @@
+// guards/redirect-if-authenticated.guard.ts
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Request, Response } from 'express';
+// import { Observable } from 'rxjs';
 
 @Injectable()
-export class SessionGuard implements CanActivate {
+export class RedirectIfAuthenticatedGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const httpContext = context.switchToHttp();
     const request = httpContext.getRequest<Request>();
     const response = httpContext.getResponse<Response>();
 
     if (request.session.user) {
-      return true;
+      response.redirect('/todos');
+      return false;
     }
 
-    // Redirect to login page
-    response.redirect('/login');
-    return false;
+    return true;
   }
 }

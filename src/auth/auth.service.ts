@@ -9,6 +9,7 @@ export class AuthService {
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async register(email: string, password: string): Promise<User> {
+    // console.log("registering user");
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new this.userModel({ email, password: hashedPassword });
     return user.save();
