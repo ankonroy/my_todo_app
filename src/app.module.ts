@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config'; 
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AuthController } from './auth/auth.controller';
@@ -12,7 +13,11 @@ import { UserModule } from './users/users.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/todoapp'),
+    ConfigModule.forRoot(),
+    // MongooseModule.forRoot('mongodb://localhost:27017/todoapp'),
+    MongooseModule.forRoot(
+      process.env.MONGODB_URI || 'mongodb://localhost:27017/todoapp',
+    ),
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Todo.name, schema: TodoSchema },
