@@ -26,7 +26,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000', // Local development
       'http://localhost:5173', // Vite dev server
-      'https://my_todo_app.onrender.com', // Your frontend on Render
+      'https://my-todo-app-whr8.onrender.com', // Your frontend on Render
     ],
     credentials: true,
   });
