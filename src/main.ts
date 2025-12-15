@@ -9,6 +9,11 @@ import { Connection } from 'mongoose';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  // IMPORTANT: Trust proxy for production (Render/Heroku)
+  if (process.env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+  }
+
   // Get MongoDB connection
   const mongooseConnection = app.get<Connection>(getConnectionToken());
 
@@ -17,23 +22,26 @@ async function bootstrap() {
 
   // Add this to your main.ts before setting views
   const viewsPath = join(__dirname, '..', 'views');
-
   app.setBaseViewsDir(viewsPath);
   app.setViewEngine('ejs');
 
-  // Enable CORS for your frontend (update with your frontend URL)
+  // Enable CORS with proper configuration
   app.enableCors({
     origin: [
-      'http://localhost:3000', // Local development
-      'http://localhost:5173', // Vite dev server
-      'https://my-todo-app-whr8.onrender.com', // Your frontend on Render
+      'http://localhost:3000',
+      'http://localhost:5173', // Vite/React
+      'https://my-todo-app-whr8.onrender.com', // Your frontend if separate
+      'https://*.onrender.com', // All Render domains
     ],
-    credentials: true,
+    credentials: true, // REQUIRED for cookies
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Accept'],
   });
 
-  // Use Render's PORT or default to 3000
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  console.log(`Application is running on port ${port}`);
+  console.log(
+    `Application running on port ${port} in ${process.env.NODE_ENV || 'development'} mode`,
+  );
 }
 bootstrap();
