@@ -5,7 +5,6 @@ import { AppModule } from './app.module';
 import { sessionConfig } from './session.config';
 import { getConnectionToken } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-// import { existsSync } from 'fs';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -22,7 +21,19 @@ async function bootstrap() {
   app.setBaseViewsDir(viewsPath);
   app.setViewEngine('ejs');
 
-  await app.listen(3000);
-  console.log('Application is running on: http://localhost:3000');
+  // Enable CORS for your frontend (update with your frontend URL)
+  app.enableCors({
+    origin: [
+      'http://localhost:3000', // Local development
+      'http://localhost:5173', // Vite dev server
+      'https://my_todo_app.onrender.com', // Your frontend on Render
+    ],
+    credentials: true,
+  });
+
+  // Use Render's PORT or default to 3000
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  console.log(`Application is running on port ${port}`);
 }
 bootstrap();

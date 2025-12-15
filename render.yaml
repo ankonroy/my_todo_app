@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: todoapp-backend
+    env: node
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+    healthCheckPath: /
+    autoDeploy: true
+    plan: free
